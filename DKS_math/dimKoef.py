@@ -5,6 +5,7 @@ import pandas as pd
 from .baseFormulas import BaseFormulas
 import warnings
 warnings.simplefilter("ignore")
+
 class DimKoef(BaseFormulas):
     
     @classmethod

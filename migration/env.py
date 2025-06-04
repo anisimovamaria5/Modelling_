@@ -4,9 +4,7 @@ from logging.config import fileConfig
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
 from alembic import context
-
 from app.database import DATABASE_URL, Base
 from app.models.models_gdh import *
 # this is the Alembic Config object, which provides
