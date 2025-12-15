@@ -229,10 +229,8 @@ class BaseGDH:
 
         z_in = self.get_z_val(self.p_in, self.t_in)  
         comp_y = self.get_comp_ratio_from_koef_nap(koef_nap_, np.vstack(freq_base), self.diam, kpd_, self.t_in, z_in, self.r_value, self.k_value)
-        # power_line = self.get_line_N_p_in(u_val, z_in, self.r_value, self.t_in, koef_rash_, koef_nap_, kpd_, self.diam)
 
         res = {
-            # 'N/pн': power_line,
             'freq_nom_all': freq_base_nom,
             'comp': [comp_ for comp_ in comp_y],
             'volume_rate': [volume_rate_x for volume_rate_x in volume_rate_x]
@@ -301,7 +299,6 @@ class BaseGDH:
 
     @classmethod
     def get_plot_gdh(self, data1, data2, data3, name):
-        # print(data1, data2, data3)
         fig, ax = plt.subplots()
 
         for f_nom in data1['n/nном'].unique():
@@ -349,13 +346,3 @@ class BaseGDH:
         ax.grid(color='lightgray', linestyle='dashed')
         return plt
     
-
-
-if __name__=='__main__':
-    # f_path = 'media\Оцифрованные СПЧ.xlsx'
-    # res = get_df_by_excel(f_path)
-    # print([
-    #     (type(row['kpd']),type(row['k_rash']),type(row['k_nap']))
-    # for _, row in res[0].iterrows()])
-    pass
-
