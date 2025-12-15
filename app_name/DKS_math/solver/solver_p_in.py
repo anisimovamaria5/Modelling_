@@ -6,7 +6,6 @@ from app_name.DKS_math.confGDH import *
 import warnings
 from autograd import value_and_grad
 import autograd.numpy as anp
-# from logger.wrapper import LoggerClass
 warnings.filterwarnings("ignore")
 
 
@@ -40,20 +39,17 @@ class PressInSolver:
         p_in = x[0]
         freqs = x[1:]
         param_names = ['p_out_diff', 'freq_dimm', 'power', 'comp', 'udal']
-    
-        # keys = self.bound_dict.keys()
+        
         cur_mode = mode.clone()
         cur_mode.p_in = p_in
         stage_results = self.conf.get_summry_without_bound(cur_mode, freqs)[num_stage]
         
         return [stage_results[key] for key in param_names]
-    
 
+    
     def minimize(self, mode:Mode):
         num_stages = len(self.conf.stage_list)
         param_names = ['p_out_diff', 'freq_dimm', 'power', 'comp', 'udal']
-        # values = self.bound_dict[0].dict().values()
-        # bound_arrs = np.array([item[:-1] for item in values])
         bounds_array_staged = np.array([
             [
                 [getattr(stage.bounds, name).max_value, getattr(stage.bounds, name).min_value]
@@ -61,17 +57,7 @@ class PressInSolver:
             ]
             for stage in self.bound_dict
         ]   
-        
         )
-        # bounds_array_staged = np.array([
-        #     [
-        #         [stage['bounds'][name]['max_value'], stage['bounds'][name]['min_value']]
-        #         for name in param_names
-        #     ]
-
-        #     for stage in self.bound_dict
-        # ]
-        # )
         upper_bounds = [self.conf.stage_list[i][0].freq_nom * bounds_array_staged[-1][1, 0] for i in range(num_stages)]
         lower_bounds = [self.conf.stage_list[i][0].freq_nom * bounds_array_staged[-1][1, 1] for i in range(num_stages)]
         p_in_lb = 0  
@@ -87,13 +73,7 @@ class PressInSolver:
                             fun=lambda x: self.get_p_out_constr(x, mode),
                             lb=mode.p_target, 
                             ub=bounds_array_staged[-1][0,0]
-                            )
-                # NonlinearConstraint(
-                #         fun=lambda x, ns=num_stage: self.get_bound_dict_constr(x, mode, ns),
-                #         lb=bound_arrs[:, 1, num_stage].tolist(), 
-                #         ub=bound_arrs[:, 0, num_stage].tolist() 
-                #         )
-                #         for num_stage in range(num_stages)         
+                            )    
             ]
         p_in_0 = (p_in_lb + p_in_ub) / 2
         freq_b = [(lb + ub) / 2 for lb, ub in zip(lower_bounds, upper_bounds)]
@@ -136,24 +116,3 @@ bound_dict = {
         0.1),
 }
 
-if __name__ == '__main__':
-    conf_obj = ConfGDH([
-            (GdhInstance.create_by_csv('./DKS_math/Test/spch_dimkoef/ГПА-ц3-16С-45-1.7(ККМ).csv'), 2),
-            (GdhInstance.create_by_csv('./DKS_math/Test/spch_dimkoef/CGX-425-16-65-1.7СМП(ПСИ).csv'), 2),
-        ])
-    mode = Mode([25.6247, 25.6247], 3.09655498953779, 288, 512, 1.31, 4.52460708334446, 0.101325, 283)
-    solv = PressInSolver(conf_obj, bound_dict)
-    # solv.get_2stage_targer_surface(mode)
-    # plt.show()
-    res = solv.minimize(mode)
-    print(res)
-    res2 = conf_obj.get_summry_without_bound(Mode(
-                                        q_rate=mode.q_rate,
-                                        p_in=res.x[0], 
-                                        t_in=mode.t_in,
-                                        r_value=mode.r_value,
-                                        k_value=mode.k_value,
-                                        p_target=mode.p_target,
-                                        press_conditonal=mode.press_conditonal,
-                                        temp_conditonal=mode.temp_conditonal), res.x[1:])
-    print(pd.DataFrame(res2))
