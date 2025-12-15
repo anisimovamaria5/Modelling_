@@ -119,43 +119,4 @@ class ConfGDH(BaseFormulas):
             f'{stage} X {cnt}'
         for stage, cnt in self.stage_list
         ])
-    
 
-# bound_dict = {
-#     'power':(
-#         np.array([10000,16000]),
-#         np.array([2000,7000]),
-#         200),
-#     'comp':(
-#         np.array([2.5,2.5]),
-#         np.array([1,1]),
-#         0.01),
-#     'udal':(
-#         np.array([100,100]),
-#         np.array([0,0]),
-#         1.0),    
-#     'freq_dimm':(
-#         np.array([1.05,1.05]),    
-#         np.array([0.7,0.7]),
-#         0.01),
-#     'p_out':(
-#         np.array([2.5,7.6]),    
-#         np.array([1.5,3.0]),
-#         0.1),    
-# }
-
-if __name__ == '__main__':
-    conf_obj = ConfGDH([
-        (GdhInstance.create_by_csv('spch_dimkoef/ГПА-ц3-16С-45-1.7(ККМ).csv'), 1),
-        (GdhInstance.create_by_csv('spch_dimkoef/CGX-425-16 65-1.7СМП(ПСИ).csv'), 2),
-        ])
-    mode = Mode(34.62, 3.1, 288, 512, 1.31, 4.52)
-    freq_bounds = conf_obj.get_freq_bound_all(mode)
-    print(freq_bounds)
-    print(pd.concat([conf_obj.get_summry_without_bound(mode, freq) for freq in freq_bounds]))
-    # freq_rehsaped = np.array([
-    #     np.array([
-    #         freq.reshape(-1)
-    #     for _ in range(2**(len(freq_bounds)-1-ind))]).reshape(-1)
-    # for ind, freq in enumerate(freq_bounds)])
-    # print(pd.concat([conf_obj.get_summry_with_bound(mode, list(freq), bound_dict) for freq in freq_rehsaped.T]))
