@@ -64,23 +64,6 @@ class GdhInstance(BaseFormulas):
         self.p_out_nom = p_out_nom
         self.name = name
         self._diam_cubed = np.pi**2 * diam**3 
-
-    # def __init__(self, diam, koef_nap, koef_rash, kpd, freq_nom, t_in, r_value, k_value, mgth, stepen, p_title, deg=4, name=None): 
-    #     self.diam = diam
-    #     self.koef_nap = koef_nap
-    #     self.koef_rash = koef_rash 
-    #     self.kpd = kpd 
-    #     self.freq_nom = freq_nom
-    #     self.t_in = t_in
-    #     self.r_value = r_value
-    #     self.k_value = k_value
-    #     self.f_nap_poly1d = np.poly1d(np.polyfit(koef_rash, koef_nap, deg))
-    #     self.f_kpd_poly1d = np.poly1d(np.polyfit(koef_rash, kpd, deg))
-    #     self.mgth = mgth
-    #     self.stepen = stepen
-    #     self.p_title = p_title
-    #     self.name = name
-    #     self._diam_cubed = np.pi**2 * diam**3 
     
     def get_kpd(self, k_rash): return self.f_kpd_poly1d(k_rash)
     def get_nap(self, k_rash): return self.f_nap_poly1d(k_rash)
@@ -106,8 +89,6 @@ class GdhInstance(BaseFormulas):
         power = self.get_power(mode.q_rate, dh, kpd_, r_value, mode.press_conditonal, mode.temp_conditonal)
         comp = self.get_comp_ratio(mode.p_in, dh, r_value, t_in, k_value, kpd_)
         p_out = mode.p_in * comp
-        # p_in_init = self.get_p_in(mode.q_rate, kpd_, r_value, mode.press_conditonal, mode.temp_conditonal, 
-        #                           power, k_value, mode.p_in, t_in, p_out)
         res = {
             'q_rate': mode.q_rate,
             'p_in': mode.p_in,
@@ -121,10 +102,8 @@ class GdhInstance(BaseFormulas):
             'p_in_result': mode.p_in,
             'p_out': p_out,
             'p_out_diff': p_out,
-            # 'title': self.name,
             'title': self.name,
             'target': abs(p_out - mode.p_target),
-            # 'p_in_init': p_in_init
         }
         return res
       
@@ -148,11 +127,3 @@ class GdhInstance(BaseFormulas):
         return ax, ax2
     
 
-if __name__ == '__main__':
-    # gdh = GdhInstance.create_by_csv('spch_dimkoef\ГПА 16-41-2.2.csv')
-    gdh = GdhInstance.read_dict('spch_dimkoef/ГПА-ц3-16С-45-1.7(ККМ).csv')
-    mode = Mode([24.62, 24.62], 3.1, 288, 512, 1.31, 4.52, 0.101325, 283)
-    print(gdh.get_summry(mode, 3500.3))
-    # print(gdh.get_freq_bound(534))
-    # ax, ax2 = gdh.show_gdh()
-    # plt.show()
